@@ -3,34 +3,21 @@
 error_reporting(~0);
 ini_set('display_errors', 1);
 
-$db_host = "localhost";
-$db_user = "test";
-$db_password = "test";
-$db_schema = "tools";
+$config = parse_ini_file("config.ini");
 
 
 header("Content-type: application/json");
 
 if (isset($_GET["ip"])) {
-    $host = gethostname();
-    $ip = gethostbyname($host);
-    $ext_ip = file_get_contents("http://ipecho.net/plain");
 
-    echo json_encode(array("host" => $host, "ip" => $ip, "external_ip" => $ext_ip));
 }
 
 if (isset($_GET["nav"])) {
-    $nav = array(
-        array("title" => "Tweetdeck", "link" => "https://tweetdeck.twitter.com/", "target" => "_blank"),
-        array("title" => "Whatsapp", "link" => "https://web.whatsapp.com/", "target" => "_blank"),
-        array("title" => "Gmail", "link" => "https://mail.google.com/mail/u/0/#inbox", "target" => "_blank")
-    );
-
-    echo json_encode($nav);
+    echo loadFile("links.json");
 }
 
 if (isset($_GET["todo"])) {
-    $db_link = mysqli_connect($db_host, $db_user, $db_password, $db_schema);
+    $db_link = mysqli_connect($config["db_host"], $config["db_user"], $config["db_password"], $config["db_schema"]);
 
     if (isset($_POST["id"], $_POST["text"])) {
         $id = mysqli_real_escape_string($db_link, $_POST["id"]);
@@ -38,8 +25,9 @@ if (isset($_GET["todo"])) {
         $address = mysqli_real_escape_string($db_link, $_SERVER['REMOTE_ADDR']);
 
         if (!empty($id) && !empty($text)) {
-            $sql = "UPDATE `todo` SET `text` = '$text', updated = now(), updatedby = '$address' WHERE `todo`.`id` = " . (int) $id . ";";
-            $db_erg = mysqli_query($db_link, $sql);
+            $statment = mysqli_prepare($db_link, loadFile("sql/updateTodo.sql"));
+            $statment->bind_param("ssi", $text, $address, $id);
+            $statment->execute();
 
             echo mysqli_error($db_link);
         }
@@ -105,7 +93,7 @@ if (isset($_GET["todo"])) {
 
     // Load Todos
     if (isset($_GET["todos"])) {
-        $todos = loadSQL('select t.id, t.`text`, date_format(t.created, "%d.%m.%Y %H:%i:%s") as created, date_format(t.updated, "%d.%m.%Y %H:%i:%s") as updated , date_format(t.deleted, "%d.%m.%Y %H:%i:%s") as deleted, t.createdby, t.updatedby, t.deletedby from todo t where t.deleted is null or ( MONTH(t.deleted) = MONTH(now()) and YEAR(t.deleted) = YEAR(now())) order by t.id desc');
+        $todos = loadSQL(loadFile("sql/getTodos.sql"));
 
         $todos_with_links = genLinks($todos);
 
@@ -119,6 +107,10 @@ if (isset($_GET["todo"])) {
     }
 
     mysqli_close($db_link);
+}
+
+function loadFile($filename){
+    return file_get_contents($filename);
 }
 
 function loadSQL($sql) {

@@ -1,0 +1,17 @@
+[
+   {
+      "title":"Tweetdeck",
+      "link":"https://tweetdeck.twitter.com",
+      "target":"_blank"
+   },
+   {
+      "title":"Whatsapp",
+      "link":"https://web.whatsapp.com",
+      "target":"_blank"
+   },
+   {
+      "title":"Gmail",
+      "link":"https://mail.google.com/mail/u/0/#inbox",
+      "target":"_blank"
+   }
+]
