@@ -256,8 +256,9 @@ function grk_Month_Range($DateString, $FirstDay = 1) {
 }
 
 function genLinks($array) {
-    $links = $out = array();
+    $out = array();
     foreach ($array as $k => $v) {
+        $links = array();
         if (isset($v["text"])) {
             $temp = explode(" ", str_replace("\r", " ", str_replace("\n", " ", $v["text"])));
             if (is_array($temp)) {
