@@ -11,8 +11,4 @@ SELECT t.id,
        t.createdby, 
        t.updatedby, 
        t.deletedby 
-FROM   todo t 
-WHERE  t.deleted IS NULL 
-        OR ( Month(t.deleted) = Month(Now()) 
-             AND Year(t.deleted) = Year(Now()) ) 
-ORDER  BY t.id DESC;
+FROM   todo t;

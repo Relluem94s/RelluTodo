@@ -1,3 +1,8 @@
+/**
+ * Author:  rellu
+ * Created: 19.12.2020
+ */
+
 CREATE TABLE `todo` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `created` datetime(6) NOT NULL,

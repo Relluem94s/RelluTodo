@@ -9,7 +9,7 @@ $config = parse_ini_file("config.ini");
 header("Content-type: application/json");
 
 if (isset($_GET["ip"])) {
-
+    
 }
 
 if (isset($_GET["nav"])) {
@@ -28,7 +28,7 @@ if (isset($_GET["todo"])) {
             $statment = mysqli_prepare($db_link, loadFile("sql/updateTodo.sql"));
             $statment->bind_param("ssi", $text, $address, $id);
             $statment->execute();
-
+            $statment->close();
             echo mysqli_error($db_link);
         }
     }
@@ -39,9 +39,10 @@ if (isset($_GET["todo"])) {
         $address = mysqli_real_escape_string($db_link, $_SERVER['REMOTE_ADDR']);
 
         if (!empty($todo)) {
-            $sql = "INSERT INTO `todo` (`text`, `deleted`, `created`, `createdby`) VALUES('$todo', null, now(), '$address');";
-            $db_erg = mysqli_query($db_link, $sql);
-            
+            $statment = mysqli_prepare($db_link, loadFile("sql/insertTodo.sql"));
+            $statment->bind_param("ss", $todo, $address);
+            $statment->execute();
+            $statment->close();
             echo mysqli_error($db_link);
         }
     }
@@ -49,7 +50,8 @@ if (isset($_GET["todo"])) {
     // Insert Todo
     else if (isset($_POST["search"])) {
         $search = utf8_decode(mysqli_real_escape_string($db_link, $_POST["search"]));
-        $sql = 'select t.id, t.`text`, date_format(t.created, "%d.%m.%Y %H:%i:%s") as created, date_format(t.updated, "%d.%m.%Y %H:%i:%s") as updated , date_format(t.deleted, "%d.%m.%Y %H:%i:%s") as deleted, t.createdby, t.updatedby, t.deletedby from todo t';
+
+        $sql = loadFile("sql/searchTodos.sql");
 
         if (is_numeric($search)) {
             $sql .= ' where t.id =' . $search . ';';
@@ -58,7 +60,6 @@ if (isset($_GET["todo"])) {
         }
 
         $todos = loadSQL($sql);
-
         $todos_with_links = genLinks($todos);
 
         echo json_encode($todos_with_links);
@@ -70,23 +71,30 @@ if (isset($_GET["todo"])) {
         $address = mysqli_real_escape_string($db_link, $_SERVER['REMOTE_ADDR']);
 
         if (!empty($id)) {
-            $sql = "select * from todo WHERE id = $id";
-            $db_erg = mysqli_query($db_link, $sql);
-            while ($zeile = mysqli_fetch_array($db_erg, MYSQLI_ASSOC)) {
-                $del = $zeile["deleted"];
+            $statment = mysqli_prepare($db_link, loadFile("sql/getTodoById.sql"));
+            $statment->bind_param("i", $id);
+            $statment->execute();
+
+            $result = $statment->get_result();
+            $statment->close();
+            while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                $del = $row["deleted"];
             }
 
             if ($del == 'null' or $del == '0' or $del == 0) {
-                $sql = "UPDATE `todo` SET `deleted` = now(), deletedby = '$address' WHERE `todo`.`id` = $id;";
-                $db_erg = mysqli_query($db_link, $sql);
-
-                echo mysqli_error($db_link);
-            } else {
-                $sql = "UPDATE `todo` SET `deleted` = null, `updated` = now(), deletedby = null, updatedby = '$address' WHERE `todo`.`id` = $id;";
-                $db_erg = mysqli_query($db_link, $sql);
-
-                echo mysqli_error($db_link);
+                $statment_del = mysqli_prepare($db_link, loadFile("sql/deleteTodo.sql"));
+                $statment_del->bind_param("si", $address, $id);
+                $statment_del->execute();
+                $statment_del->close();
             }
+            else{
+                $statment_del = mysqli_prepare($db_link, loadFile("sql/restoreTodo.sql"));
+                $statment_del->bind_param("si", $address, $id);
+                $statment_del->execute();
+                $statment_del->close();
+            }          
+            
+            echo mysqli_error($db_link);
         }
     }
 
@@ -109,7 +117,7 @@ if (isset($_GET["todo"])) {
     mysqli_close($db_link);
 }
 
-function loadFile($filename){
+function loadFile($filename) {
     return file_get_contents($filename);
 }
 
@@ -132,8 +140,13 @@ function loadSQL($sql) {
 
 function loadTodosCount() {
     global $db_link;
-    $sql = 'select count(t.id) as amount from todo t';
-    $result = mysqli_query($db_link, $sql);
+
+    $statment = mysqli_prepare($db_link, loadFile("sql/getTotalTodoCount.sql"));
+    $statment->execute();
+
+    $result = $statment->get_result();
+    $statment->close();
+    
     $amount = 0;
     if ($result && mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
@@ -145,23 +158,17 @@ function loadTodosCount() {
 }
 
 function stats() {
-    $open_now = 0;
-    $open_this_day = 0;
-    $closed_this_day = 0;
-    $open_this_week = 0;
-    $closed_this_week = 0;
-    $open_this_month = 0;
-    $closed_this_month = 0;
+    $open_now = $open_this_day = $closed_this_day = $open_this_week = $closed_this_week = $open_this_month = $closed_this_month = 0;
     $all_todos = loadTodosCount();
-
 
     $week = grk_Week_Range(date("Y-m-d h:i:sa"), -1);
     $month = grk_Month_Range(date("Y-m-d h:i:sa"), -1);
 
 
-    foreach (loadSQL('select t.id, t.deleted, t.created, t.updated, t.createdby, t.updatedby, t.deletedby
-from todo t 
-where t.deleted is null or ( MONTH(t.deleted) = MONTH(now()) and YEAR(t.deleted) = YEAR(now()))') as $k => $v) {
+    $sql = loadFile("sql/getStatsTodos.sql");
+    $x = loadSQL($sql);
+    
+    foreach ($x as $k => $v) {
         $datetime1 = new DateTime($v['created']);
         $datetime3 = new DateTime('today');
 
@@ -279,6 +286,5 @@ function genLinks($array) {
 function startsWith($string, $startString) {
     $len = strlen($startString);
 }
-
 ?>
 

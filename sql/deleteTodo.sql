@@ -4,7 +4,6 @@
  */
 
 UPDATE `todo` 
-SET    `text` = ?, 
-       updated = Now(), 
-       updatedby = ? 
+SET    `deleted` = now(), 
+       deletedby = ?
 WHERE  `todo`.`id` = ?; 
