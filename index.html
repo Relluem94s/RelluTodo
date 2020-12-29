@@ -57,7 +57,7 @@
                     <td class="col-sm-8">
                         <textarea title="ID: {{todo.id}}" ng-disabled="todo.deletedby" class="form-control" ng-model="todo.text">{{todo.text}}</textarea>
                         <a ng-repeat="link in todo.links" target="_blank" href="{{link.link}}" title="{{link.short}}"><span class="badge">{{link.short}}</span></a>
-                        <span class="label label-warning" title="{{label.label}}"  ng-repeat="label in todo.labels" ng-click="copy(label.label)">{{label.label}}</span>
+                        <span class="label label-info" title="{{label}}"  ng-repeat="label in todo.searchlabels" ng-click="search(label)">{{label}}</span>
                         
                         <input type="hidden" name="id" class="btn btn-info" value="{{todo.id}}">
                     </td>
