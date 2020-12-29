@@ -11,4 +11,4 @@ SELECT t.id,
        t.createdby, 
        t.updatedby, 
        t.deletedby 
-FROM   todo t;
+FROM   todo t
