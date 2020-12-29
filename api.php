@@ -86,14 +86,13 @@ if (isset($_GET["todo"])) {
                 $statment_del->bind_param("si", $address, $id);
                 $statment_del->execute();
                 $statment_del->close();
-            }
-            else{
+            } else {
                 $statment_del = mysqli_prepare($db_link, loadFile("sql/restoreTodo.sql"));
                 $statment_del->bind_param("si", $address, $id);
                 $statment_del->execute();
                 $statment_del->close();
-            }          
-            
+            }
+
             echo mysqli_error($db_link);
         }
     }
@@ -104,8 +103,9 @@ if (isset($_GET["todo"])) {
         $todos = loadSQL(loadFile("sql/getTodos.sql"));
 
         $todos_with_links = genLinks($todos);
+        $todos_with_links_and_searchlabels = genSearchLabel($todos_with_links);
 
-        echo json_encode($todos_with_links);
+        echo json_encode($todos_with_links_and_searchlabels);
     }
 
 
@@ -146,7 +146,7 @@ function loadTodosCount() {
 
     $result = $statment->get_result();
     $statment->close();
-    
+
     $amount = 0;
     if ($result && mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
@@ -167,7 +167,7 @@ function stats() {
 
     $sql = loadFile("sql/getStatsTodos.sql");
     $x = loadSQL($sql);
-    
+
     foreach ($x as $k => $v) {
         $datetime1 = new DateTime($v['created']);
         $datetime3 = new DateTime('today');
@@ -280,9 +280,36 @@ function genLinks($array) {
     return $out;
 }
 
+function genSearchLabel($array) {
+    $out = array();
+    foreach ($array as $k => $v) {
+
+        $labels = array();
+
+        if (isset($v["text"])) {
+            $temp = explode(" ", str_replace("\r", " ", str_replace("\n", " ", str_replace("\t", " ", $v["text"]))));
+            if (is_array($temp)) {
+                foreach ($temp as $k2 => $v2) {
+                    if (startsWith($v2, "#")) {
+                        $start = strpos($v2, "?");
+                        $label = $v2;
+                        $label = str_replace("#", "", $label);
+
+                        $labels[] = $label;
+                    }
+                }
+            }
+        }
+        $v["searchlabels"] = $labels;
+        $out[] = $v;
+    }
+    return $out;
+}
+
+
 function startsWith($string, $startString) {
     $len = strlen($startString);
-    return substr( $string, 0, $len ) === $startString;
+    return substr($string, 0, $len) === $startString;
 }
 ?>
 
