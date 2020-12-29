@@ -61,8 +61,9 @@ if (isset($_GET["todo"])) {
 
         $todos = loadSQL($sql);
         $todos_with_links = genLinks($todos);
+        $todos_with_links_and_searchlabels = genSearchLabel($todos_with_links);
 
-        echo json_encode($todos_with_links);
+        echo json_encode($todos_with_links_and_searchlabels);
     }
 
     // Delete or Restore Todo
