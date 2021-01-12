@@ -1,0 +1,80 @@
+div.sidebar{
+    position:fixed;
+    top:65px;
+    right:0px;
+    padding:15px;
+    border-left:1px solid #aaa;
+    border-top:1px solid #aaa;
+    border-bottom:1px solid #aaa;
+    background-color:#eee;
+    border-radius:20px 0px 0px 20px;
+}
+
+div.sidebar div.refresh{
+    float:right;
+    margin-top:80px;
+}
+
+div.sidebar div.job{
+    float:left;
+}
+
+div.sidebar div.job img{
+    width:16px;
+}
+
+div.container table.todoList textarea{
+    resize:none;
+    height:66px; /* 50px */
+    font-size:12px;
+    padding:2px 12px 2px 6px;
+}
+
+div.container table.todoList textarea.input{
+    resize:none;
+    height:100px;
+    font-size:12px;
+    padding:2px 12px 2px 6px;
+}
+
+div.container table.todoList p {
+    margin-bottom:2px;
+}
+
+div.container table.todoList h5 {
+    margin:0px;
+}
+
+div.container table.todoList h5 span {
+    margin-right:10px;
+}
+
+div.container table.todoList a span.badge {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width:150px;
+    margin-right:5px;
+}
+
+div.container table.todoList a span.label {
+    margin-right:5px;
+}
+
+.navbar-inverse .navbar-brand{
+    color:#fff !important;
+}
+
+.navbar-inverse {
+    background-color: #f37d00;
+    border:0px;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color:#fff !important;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+    background-color:#e26c00;
+    color:#fff !important;
+}

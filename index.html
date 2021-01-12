@@ -1,0 +1,79 @@
+<html ng-app="tools">
+    <head>
+        <title>Tools</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <script src="node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="node_modules/angular/angular.min.js"></script>
+        <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="assets/js/tools_app.js"></script>
+        <link rel="icon" href="assets/img/tools.png" type="image/x-icon">
+        <link rel="shortcut icon" href="assets/img/tools.png" type="image/x-icon">
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse" role="navigation" ng-controller="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex2-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" title="01.09.2019" href="#">Relluem94</a>
+            </div>
+            <div class="collapse navbar-collapse navbar-ex2-collapse">
+                <ul class="nav navbar-nav">
+                    <li ng-repeat="nav in navigation">
+                        <a ng-if="nav.link" target="_blank" href="{{nav.link}}">{{nav.title}}</a>
+                        <a ng-if="!nav.link" data-target="{{nav.datatarget}}" data-toggle="{{nav.datatoggle}}" title="{{nav.title}}">{{nav.title}}</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+            <table class="table table-striped table-bordered todoList" ng-controller="todoList">
+                <tr>
+                    <th class="col-sm-8">
+                        <textarea class="form-control input" name="todo" ng-model="todo" placeholder="Todo Description"></textarea>
+                    </th>
+                    <th class="col-sm-1">
+                        <button title="Save" type="button" ng-disabled="!todo" class="btn btn-success" ng-click="save(todo)"><i class="fas fa-paper-plane"></i></button>
+                        <button title="Search" type="button" ng-disabled="!todo" class="btn btn-info" ng-click="search(todo)"><i class="fas fa-search"></i></button>
+                        <button title="Reload Todos" type="button" class="btn btn-primary" ng-click="refresh()"><i class="fas fa-sync"></i></button>
+                    </th>
+                    <th class="col-sm-5"></th>
+                </tr>
+                <tr>
+                    <th colspan="3">
+                        <span ng-repeat="stat in stats" class="stats label {{stat.label}}"><i class="{{stat.icon}}"></i> {{stat.title}} {{stat.amount}}</span>
+                    </th>
+                </tr>
+                <tr ng-repeat="todo in todos| orderBy:'-id'| orderBy:'deletedby'" id="{{todo.id}}">
+                    <td class="col-sm-8">
+                        <textarea title="ID: {{todo.id}}" ng-disabled="todo.deletedby" class="form-control" ng-model="todo.text">{{todo.text}}</textarea>
+                        <a ng-repeat="link in todo.links" target="_blank" href="{{link.link}}" title="{{link.short}}"><span class="badge"><i class="fas fa-link"></i>&nbsp;{{link.short}}</span></a>
+                        <span class="label label-info" title="{{label}}"  ng-repeat="label in todo.searchlabels" ng-click="search(label)"><i class="fas fa-hashtag"></i>&nbsp;{{label}}</span>
+
+                        <input type="hidden" name="id" class="btn btn-info" value="{{todo.id}}">
+                    </td>
+                    <td class="col-sm-1">
+                        <button title="Edit" ng-if="!todo.deletedby" type="button" class="btn btn-warning" ng-click="edit(todo)"><i class="fas fa-pen-square"></i></button>
+                        <button title="Delete" ng-if="!todo.deletedby" type="button" class="btn btn-danger" ng-click="delete(todo)"><i class="fas fa-check-square"></i></button>
+                        <button title="Restore" ng-if="todo.deletedby" type="button" class="btn btn-info" ng-click="restore(todo)"><i class="fas fa-square"></i></button>
+                    </td>
+                    <td class="col-sm-5">
+                        <p>Created by <a href="http://{{todo.createdby}}" target="_blank">{{todo.createdby}}</a> {{todo.created}}</p>
+                        <p ng-if="todo.updatedby">Updated by <a href="http://{{todo.updatedby}}" target="_blank">{{todo.updatedby}}</a> {{todo.updated}}</p>
+                        <p ng-if="todo.deletedby">Deleted by <a href="http://{{todo.deletedby}}" target="_blank">{{todo.deletedby}}</a> {{todo.deleted}}</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="display:none;" class="sidebar" ng-controller="sideBar">
+
+        </div>
+    </body>
+</html>
