@@ -27,8 +27,7 @@
             <div class="collapse navbar-collapse navbar-ex2-collapse">
                 <ul class="nav navbar-nav">
                     <li ng-repeat="nav in navigation">
-                        <a ng-if="nav.link" target="_blank" href="{{nav.link}}">{{nav.title}}</a>
-                        <a ng-if="!nav.link" data-target="{{nav.datatarget}}" data-toggle="{{nav.datatoggle}}" title="{{nav.title}}">{{nav.title}}</a>
+                        <a ng-if="nav.link" target="_blank" href="{{nav.link}}"><i ng-if="nav.icon" class="{{nav.icon}}"></i> {{nav.title}}</a>
                     </li>
                 </ul>
             </div>
