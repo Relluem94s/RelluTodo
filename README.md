@@ -2,7 +2,7 @@
 
 ## Install
 1. Clone Repo ```git clone https://github.com/Relluem94/RelluTodo.git``` 
-1. ```npm install```
+1. Run ```npm install``` to get dependencies
 1. Execute /scripts/todo.sql to create the necessary Table (Create Schema)
 1. Edit config.in to match host, user, password and schema
 1. Edit links.json add edit or remove entries
@@ -13,7 +13,7 @@
 * Labels for URLS for easy Link opening
 * Create Categories by adding # to a word. Click on the Label below the edit field and all Todos with the same category getting displayed
 * Search Function
-* Customizable Shortcuts for the Navigationbar
+* Customizable Links in the Navigationbar with icons from [Fontawsome](https://fontawesome.com/icons?d=gallery)
 
 ## Todos
 * Adding Install Script
