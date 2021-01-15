@@ -86,3 +86,7 @@ div.container table.todoList span.label {
     background-color:#e26c00;
     color:#fff !important;
 }
+
+button {
+    margin-bottom: 8px !important;
+}
