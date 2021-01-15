@@ -2,12 +2,14 @@
    {
       "title":"Tweetdeck",
       "link":"https://tweetdeck.twitter.com",
-      "target":"_blank"
+      "target":"_blank",
+      "icon": "fab fa-twitter"
    },
    {
       "title":"Whatsapp",
       "link":"https://web.whatsapp.com",
-      "target":"_blank"
+      "target":"_blank",
+      "icon":"fab fa-whatsapp"
    },
    {
       "title":"Gmail",
