@@ -69,6 +69,10 @@ div.container table.todoList span.label {
     margin-right:5px;
 }
 
+div.container table.todoList span.stats {
+    margin-right:6px;
+}
+
 .navbar-inverse .navbar-brand{
     color:#fff !important;
 }
