@@ -57,7 +57,15 @@ div.container table.todoList a span.badge {
     margin-right:5px;
 }
 
-div.container table.todoList a span.label {
+div.container table.todoList a span.label i.fa-hashtag {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width:150px;
+    margin-right:5px;
+}
+
+div.container table.todoList span.label {
     margin-right:5px;
 }
 
