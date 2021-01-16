@@ -17,7 +17,7 @@ if (filter_has_var(INPUT_GET, "todo")) {
     $address = mysqli_real_escape_string($db_link, filter_input(INPUT_SERVER, "REMOTE_ADDR"));
     if (filter_has_var(INPUT_POST, "id") && filter_has_var(INPUT_POST, "text")) {
         $id = mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT));
-        $text = utf8_decode(mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "text", FILTER_SANITIZE_SPECIAL_CHARS)));
+        $text = stripslashes(utf8_decode(mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "text", FILTER_SANITIZE_SPECIAL_CHARS))));
         if (!empty($id) && !empty($text)) {
             $statment = mysqli_prepare($db_link, loadFile("assets/sql/updateTodo.sql"));
             $statment->bind_param("ssi", $text, $address, $id);
@@ -29,7 +29,7 @@ if (filter_has_var(INPUT_GET, "todo")) {
 
     // Insert Todo
     else if (filter_has_var(INPUT_POST, "todo")) {
-        $todo = utf8_decode(mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "todo", FILTER_SANITIZE_SPECIAL_CHARS)));
+        $todo = stripslashes(utf8_decode(mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "todo", FILTER_SANITIZE_SPECIAL_CHARS))));
         if (!empty($todo)) {
             $statment = mysqli_prepare($db_link, loadFile("assets/sql/insertTodo.sql"));
             $statment->bind_param("ss", $todo, $address);
