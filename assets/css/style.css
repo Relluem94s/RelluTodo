@@ -11,12 +11,15 @@ div.sidebar{
 }
 
 div.sidebar div.refresh{
-    float:right;
-    margin-top:80px;
+    margin-top:20px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
-div.sidebar div.job{
-    float:left;
+div.sidebar ul.job{
+    list-style-type: none;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 div.sidebar div.job img{
