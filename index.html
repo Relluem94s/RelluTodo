@@ -72,7 +72,7 @@
             </table>
         </div>
         <div ng-controller="sideBar">
-            <div class="sidebar"  ng-show="!isObjectEmpty(jenkins)">
+            <div class="sidebar" ng-hide="isObjectEmpty(jenkins)">
                 <ul class="job" ng-repeat="job in jenkins">
                     <li>
                         <a href="{{job.url}}" target="_blank">{{job.name}}</a>
