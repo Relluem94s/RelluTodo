@@ -12,12 +12,23 @@ if (filter_has_var(INPUT_GET, "nav")) {
     echo loadFile("links.json");
 }
 
+if (filter_has_var(INPUT_GET, "jenkins")) {
+    
+    $jobs_json = json_decode(loadFile("jenkins.json"));
+    
+    $jobs = array();
+    foreach($jobs_json as $k => $v){
+        $jobs[] = getJob($v->link, $v->user, $v->token);
+    }
+    echo json_encode($jobs);
+}
+
 if (filter_has_var(INPUT_GET, "todo")) {
     $db_link = mysqli_connect($config["db_host"], $config["db_user"], $config["db_password"], $config["db_schema"]);
     $address = mysqli_real_escape_string($db_link, filter_input(INPUT_SERVER, "REMOTE_ADDR"));
     if (filter_has_var(INPUT_POST, "id") && filter_has_var(INPUT_POST, "text")) {
         $id = mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT));
-        $text = stripslashes(utf8_decode(mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "text", FILTER_SANITIZE_SPECIAL_CHARS))));
+        $text = stripslashes((mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "text", FILTER_SANITIZE_SPECIAL_CHARS))));
         if (!empty($id) && !empty($text)) {
             $statment = mysqli_prepare($db_link, loadFile("assets/sql/updateTodo.sql"));
             $statment->bind_param("ssi", $text, $address, $id);
@@ -29,7 +40,7 @@ if (filter_has_var(INPUT_GET, "todo")) {
 
     // Insert Todo
     else if (filter_has_var(INPUT_POST, "todo")) {
-        $todo = stripslashes(utf8_decode(mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "todo", FILTER_SANITIZE_SPECIAL_CHARS))));
+        $todo = stripslashes((mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "todo", FILTER_SANITIZE_SPECIAL_CHARS))));
         if (!empty($todo)) {
             $statment = mysqli_prepare($db_link, loadFile("assets/sql/insertTodo.sql"));
             $statment->bind_param("ss", $todo, $address);
@@ -41,7 +52,7 @@ if (filter_has_var(INPUT_GET, "todo")) {
 
     // Search Todo
     else if (filter_has_var(INPUT_POST, "search")) {
-        $search = utf8_decode(mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "search", FILTER_SANITIZE_STRING)));
+        $search = (mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "search", FILTER_SANITIZE_STRING)));
         $sql = loadFile("assets/sql/searchTodos.sql");
         if (is_numeric($search)) {
             $sql .= ' where t.id =' . $search . ';';
@@ -112,7 +123,7 @@ function loadSQL($sql) {
         while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
             $row_data = array();
             foreach ($row as $k => $v) {
-                $row_data += array($k => html_entity_decode(utf8_encode($v), ENT_QUOTES | ENT_HTML5));
+                $row_data += array($k => html_entity_decode(($v), ENT_QUOTES | ENT_HTML5));
             }
             $todos[] = $row_data;
         }
@@ -290,6 +301,17 @@ function genSearchLabel($array) {
         $out[] = $v;
     }
     return $out;
+}
+
+
+function getJob(string $url, string $user, string $token){
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_USERPWD, $user.":".$token);
+    $output = curl_exec($ch);
+    curl_close($ch);
+    return json_decode($output);
 }
 
 
