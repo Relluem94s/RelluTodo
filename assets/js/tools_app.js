@@ -11,7 +11,7 @@ var headers = {
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 };
 
-app.controller("sideBar", function ($scope, $http, $interval) {
+app.controller("sideBar", function ($scope, $http, $interval, $timeout) {    
     $scope.isObjectEmpty = function (jenkins) {
         if (jenkins === undefined || jenkins === null || (Array.isArray(jenkins) && jenkins.length === 0)) {
             return true;
@@ -20,6 +20,20 @@ app.controller("sideBar", function ($scope, $http, $interval) {
 
         }
     };
+    
+    $scope.build = function(url){
+        $http({
+            method: 'GET',
+            url: 'api.php?jenkins&job='+url
+        }).then(function successCallback(response) {
+             $timeout(function (){
+                $interval(function () {
+                    $scope.load();
+                }, 10000, 5);
+            }, 1000);
+        });
+    };
+    
     $scope.load = function () {
         $http({
             method: 'GET',
