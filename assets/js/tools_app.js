@@ -12,13 +12,12 @@ var headers = {
 };
 
 app.controller("sideBar", function ($scope, $http, $interval) {
-    $scope.isObjectEmpty = function(jenkins){
-        if(jenkins === undefined || jenkins === null || (Array.isArray(jenkins) && jenkins.length === 0)){
+    $scope.isObjectEmpty = function (jenkins) {
+        if (jenkins === undefined || jenkins === null || (Array.isArray(jenkins) && jenkins.length === 0)) {
             return true;
-        }
-        else{
+        } else {
             return false;
-            
+
         }
     };
     $scope.load = function () {
@@ -29,13 +28,13 @@ app.controller("sideBar", function ($scope, $http, $interval) {
             $scope.jenkins = response.data;
         });
     };
-    
+
     $scope.load();
-    
-    $interval(function(){
+
+    $interval(function () {
         $scope.load();
     }, 120000);
-    
+
 });
 
 app.controller("todoList", function ($scope, $http) {
@@ -44,7 +43,7 @@ app.controller("todoList", function ($scope, $http) {
             method: 'GET',
             url: 'api.php?todo&todos'
         }).then(function successCallback(response) {
-            $scope.todos = response.data;
+            $scope.generateLinks(response.data);
         });
         $http({
             method: 'GET',
@@ -106,7 +105,7 @@ app.controller("todoList", function ($scope, $http) {
                 search: todo
             }
         }).then(function successCallback(response) {
-            $scope.todos = response.data;
+            $scope.generateLinks(response.data);
         });
         $scope.todo = "";
     };
@@ -144,8 +143,33 @@ app.controller("todoList", function ($scope, $http) {
         document.execCommand("copy");
         document.body.removeChild(dummy);
     };
+    
+    $scope.generateLinks = function(data){
+        var todos = [];
+            Object.keys(data).forEach(function (outerKey) {
+                var entry = [];
+                Object.keys(data[outerKey]).forEach(function (innerKey) {
+                    if (innerKey === "text") {
+                        entry["searchlabels"] = [];
+                        entry["links"] = [];
+                        var text = (data[outerKey][innerKey]).split(/\s+/g);
+                        for (var i = 0; i <= text.length; i++) {
 
-});
+                            if (text[i] !== undefined && text[i].startsWith("http")) {
+                                entry["links"].push({"link": text[i], "short": text[i].split("//")[1].replace("www.", "")});
+                            }
+                            if (text[i] !== undefined && text[i].startsWith("#")) {
+                                entry["searchlabels"].push(text[i].replace("#", ""));
+                            }
+                        }
+                    }
+                    entry[innerKey] = data[outerKey][innerKey];
+                });
+                todos.push(entry);
+            });
+            $scope.todos = todos;
+        };
+    });
 
 app.controller("navigation", function ($scope, $http) {
     $http({
