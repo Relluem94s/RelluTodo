@@ -18,6 +18,9 @@ if (filter_has_var(INPUT_GET, "jenkins")) {
     
     $jobs = array();
     foreach($jobs_json as $k => $v){
+        if($v->user === "USERNAME"){
+            break;
+        }
         $jobs[] = getJob($v->link, $v->user, $v->token);
     }
     echo json_encode($jobs);
