@@ -13,11 +13,12 @@ var headers = {
 
 app.controller("sideBar", function ($scope, $http) {
     $scope.isObjectEmpty = function(jenkins){
-        if(jenkins !== undefined){
-            return Object.keys(jenkins).length === 0;
+        if(jenkins === undefined || jenkins === null || (Array.isArray(jenkins) && jenkins[0] === null)){
+            return true;
         }
         else{
             return false;
+            
         }
     };
     $scope.load = function () {
