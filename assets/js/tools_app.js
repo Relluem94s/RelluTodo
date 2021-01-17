@@ -132,9 +132,6 @@ app.controller("todoList", function ($scope, $http) {
         $scope.delete(todo);
     };
 
-
-
-
     $scope.copy = function (text) {
         var dummy = document.createElement("textarea");
         document.body.appendChild(dummy);
@@ -154,7 +151,6 @@ app.controller("todoList", function ($scope, $http) {
                         entry["links"] = [];
                         var text = (data[outerKey][innerKey]).split(/\s+/g);
                         for (var i = 0; i <= text.length; i++) {
-
                             if (text[i] !== undefined && text[i].startsWith("http")) {
                                 entry["links"].push({"link": text[i], "short": text[i].split("//")[1].replace("www.", "")});
                             }
