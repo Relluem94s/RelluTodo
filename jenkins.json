@@ -1,0 +1,7 @@
+[
+   {
+      "user":"USERNAME",
+      "token":"TOKEN",
+      "link":"https://JENKINSURL/job/JOB/api/json"
+   }
+]
