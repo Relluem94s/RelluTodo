@@ -12,15 +12,23 @@ var headers = {
 };
 
 app.controller("sideBar", function ($scope, $http) {
+    $scope.isObjectEmpty = function(jenkins){
+        if(jenkins !== undefined){
+            return Object.keys(jenkins).length === 0;
+        }
+        else{
+            return false;
+        }
+    };
     $scope.load = function () {
         $http({
             method: 'GET',
-            url: 'api.php?ip'
+            url: 'api.php?jenkins'
         }).then(function successCallback(response) {
-            $scope.ip = response.data;
+            $scope.jenkins = response.data;
         });
     };
-
+    
     $scope.load();
 });
 
