@@ -11,7 +11,7 @@ var headers = {
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 };
 
-app.controller("sideBar", function ($scope, $http) {
+app.controller("sideBar", function ($scope, $http, $interval) {
     $scope.isObjectEmpty = function(jenkins){
         if(jenkins === undefined || jenkins === null || (Array.isArray(jenkins) && jenkins[0] === null)){
             return true;
@@ -31,6 +31,11 @@ app.controller("sideBar", function ($scope, $http) {
     };
     
     $scope.load();
+    
+    $interval(function(){
+        $scope.load();
+    }, 120000);
+    
 });
 
 app.controller("todoList", function ($scope, $http) {
