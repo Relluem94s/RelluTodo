@@ -13,7 +13,7 @@ var headers = {
 
 app.controller("sideBar", function ($scope, $http, $interval) {
     $scope.isObjectEmpty = function(jenkins){
-        if(jenkins === undefined || jenkins === null || (Array.isArray(jenkins) && jenkins[0] === null)){
+        if(jenkins === undefined || jenkins === null || (Array.isArray(jenkins) && jenkins.length === 0)){
             return true;
         }
         else{
