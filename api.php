@@ -1,7 +1,7 @@
 <?php
 
-error_reporting(~0);
-ini_set('display_errors', 1);
+error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+ini_set('display_errors', E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
 $config = parse_ini_file("config.ini");
 
@@ -13,17 +13,29 @@ if (filter_has_var(INPUT_GET, "nav")) {
 }
 
 if (filter_has_var(INPUT_GET, "jenkins")) {
-    
     $jobs_json = json_decode(loadFile("jenkins.json"));
-    
-    $jobs = array();
-    foreach($jobs_json as $k => $v){
-        if($v->user === "USERNAME"){
-            break;
+    if (filter_has_var(INPUT_GET, "job")) {
+        $job = filter_input(INPUT_GET, "job", FILTER_SANITIZE_URL);
+        foreach ($jobs_json as $k => $v) {
+            if ($v->link === $job . "api/json") {
+                echo buildJob($job, $v->user, $v->token);
+                break;
+            }
         }
-        $jobs[] = getJob($v->link, $v->user, $v->token);
+    } else {
+        $urls = array();
+        $users = array();
+        $tokens = array();
+        foreach ($jobs_json as $k => $v) {
+            if ($v->user === "USERNAME") {
+                break;
+            }
+            $urls[] = $v->link;
+            $users[] = $v->user;
+            $tokens[] = $v->token;
+        }
+        echo execCurls($urls, $users, $tokens);
     }
-    echo json_encode($jobs);
 }
 
 if (filter_has_var(INPUT_GET, "todo")) {
@@ -98,7 +110,7 @@ if (filter_has_var(INPUT_GET, "todo")) {
     if (filter_has_var(INPUT_GET, "todos")) {
         echo json_encode(loadSQL(loadFile("assets/sql/getTodos.sql")));
     }
-    
+
     //Load Stats
     if (filter_has_var(INPUT_GET, "stats")) {
         echo json_encode(stats());
@@ -124,7 +136,7 @@ function loadSQL($sql) {
     return $todos;
 }
 
-function decodeRow(array $row){
+function decodeRow(array $row) {
     $row_data = array();
     foreach ($row as $k => $v) {
         $row_data += array($k => html_entity_decode(($v), ENT_QUOTES | ENT_HTML5));
@@ -155,17 +167,60 @@ function stats() {
     return loadSQL(loadFile("assets/sql/getStatsTodos.sql"))[0];
 }
 
+function getJob(string $url, string $user, string $token) {
+    return execCurl($url, $user, $token, false, "");
+}
 
-function getJob(string $url, string $user, string $token){
+function buildJob(string $url, string $user, string $token) {
+    return execCurl($url, $user, $token, true, "build");
+}
+
+function execCurls(array $urls, array $users, array $tokens) {
+    $mh = curl_multi_init();
+    $opts = array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_TIMEOUT => 30, CURLOPT_CONNECTTIMEOUT => 60, CURLOPT_ENCODING => 'gzip', CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+    $j = 0;
+    for ($i = 0; $i < sizeof($urls); $i++) {
+        $ch = curl_init($urls[$i]);
+        curl_setopt_array($ch, $opts);
+        curl_setopt($ch, CURLOPT_USERPWD, $users[$i] . ":" . $tokens[$i]);
+        curl_multi_add_handle($mh, $ch);
+    }
+    $results = array();
+    do {
+        while (($exec = curl_multi_exec($mh, $running)) == CURLM_CALL_MULTI_PERFORM);
+        if ($exec != CURLM_OK) {
+            break;
+        }
+        while ($ch = curl_multi_info_read($mh)) {
+            $j++;
+            $ch = $ch['handle'];
+            $results[] = json_decode(curl_multi_getcontent($ch));
+            curl_multi_remove_handle($mh, $ch);
+            curl_close($ch);
+        }
+    } while ($running);
+    curl_multi_close($mh);
+
+    return json_encode($results);
+}
+
+function execCurl(string $url, string $user, string $token, bool $post, string $param) {
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_URL, $url . $param);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_USERPWD, $user.":".$token);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+    curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
+    curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+
+    if ($post) {
+        curl_setopt($ch, CURLOPT_POST, 1);
+    }
+    curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $token);
     $output = curl_exec($ch);
     curl_close($ch);
     return json_decode($output);
 }
-
 
 function startsWith($string, $startString) {
     $len = strlen($startString);
