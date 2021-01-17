@@ -71,7 +71,24 @@
                 </tr>
             </table>
         </div>
-        <div style="display:none;" class="sidebar" ng-controller="sideBar">
+        <div ng-controller="sideBar">
+            <div class="sidebar"  ng-show="!isObjectEmpty(jenkins)">
+                <ul class="job" ng-repeat="job in jenkins">
+                    <li>
+                        <a href="{{job.url}}" target="_blank">{{job.name}}</a>
+                    </li>
+                    <li ng-repeat="build in job.builds">
+                        <i class="far fa-question-circle" style="color:yellow" ng-if="job.lastUnstableBuild.number == build.number"></i> 
+                        <i class="far fa-times-circle" style="color:red" ng-if="job.lastFailedBuild.number == build.number"></i> 
+                        <i class="far fa-check-circle" style="color:green" ng-if="job.lastStableBuild.number == build.number || !(job.lastFailedBuild.number == build.number)"></i> 
+                        <a href="{{build.url}}" target="_blank">{{build.number}}</a>
+                    </li>
+                </ul>
+                <div class="refresh">
+                    <button class="btn btn-primary" ng-click="load()"><i class="fas fa-sync"></i></button>
+                </div>
+            </div>
+
 
         </div>
     </body>
