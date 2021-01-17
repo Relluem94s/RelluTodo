@@ -117,15 +117,19 @@ function loadSQL($sql) {
     $todos = array();
     if ($result && mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-            $row_data = array();
-            foreach ($row as $k => $v) {
-                $row_data += array($k => html_entity_decode(($v), ENT_QUOTES | ENT_HTML5));
-            }
-            $todos[] = $row_data;
+            $todos[] = decodeRow($row);
         }
         $result->close();
     }
     return $todos;
+}
+
+function decodeRow(array $row){
+    $row_data = array();
+    foreach ($row as $k => $v) {
+        $row_data += array($k => html_entity_decode(($v), ENT_QUOTES | ENT_HTML5));
+    }
+    return $row_data;
 }
 
 function loadTodosCount() {
@@ -148,105 +152,9 @@ function loadTodosCount() {
 }
 
 function stats() {
-    $open_now = $open_this_day = $closed_this_day = $open_this_week = $closed_this_week = $open_this_month = $closed_this_month = 0;
-    $all_todos = loadTodosCount();
-
-    $week = grk_Week_Range(date("Y-m-d h:i:sa"), -1);
-    $month = grk_Month_Range(date("Y-m-d h:i:sa"), -1);
-
-    $sql = loadFile("assets/sql/getStatsTodos.sql");
-    $x = loadSQL($sql);
-
-    foreach ($x as $k => $v) {
-        $datetime1 = new DateTime($v['created']);
-        $datetime3 = new DateTime('today');
-
-        $datetime1->setTime(0, 0, 0); // Bug if it is midnight
-        $datetime3->setTime(0, 0, 0);
-
-        $i1 = date_diff($datetime1, $datetime3);
-
-        if ($v['deleted'] != null) {
-            $datetime2 = new DateTime($v['deleted']);
-
-            $datetime2->setTime(0, 0, 0);
-
-            $i2 = date_diff($datetime2, $datetime3);
-
-            if ($i2->format('%a') == 0) {
-                $closed_this_day++;
-            }
-            if ($datetime2->format('Y-m-d') <= $week[1] && $datetime2->format('Y-m-d') >= $week[0]) {
-                $closed_this_week++;
-            }
-            if ($datetime2->format('Y-m-d') <= $month[1] && $datetime2->format('Y-m-d') >= $month[0]) {
-                $closed_this_month++;
-            }
-        } else {
-            $open_now++;
-        }
-
-        if ($i1->format('%a') == 0) {
-            $open_this_day++;
-        }
-
-        if ($v['created'] < $week[1] && $v['created'] > $week[0]) {
-            $open_this_week++;
-        }
-
-        if ($v['created'] < $month[1] && $v['created'] > $month[0]) {
-            $open_this_month++;
-        }
-    }
-
-    return getStats($open_now, $open_this_day, $closed_this_day, $open_this_week, $closed_this_week, $open_this_month, $closed_this_month, $all_todos);
+    return loadSQL(loadFile("assets/sql/getStatsTodos.sql"))[0];
 }
 
-function getStats($open_now, $open_this_day, $closed_this_day, $open_this_week, $closed_this_week, $open_this_month, $closed_this_month, $all_todos){
-    return array(
-        array("title" => "Todos: ", "amount" => $open_now, "label" => "label-danger", "icon" => 'fas fa-folder-open'),
-        array("title" => "Today: ", "amount" => $open_this_day, "label" => "label-warning", "icon" => "fas fa-folder-plus"),
-        array("title" => "Today: ", "amount" => $closed_this_day, "label" => "label-success", "icon" => "fas fa-folder"),
-        array("title" => "This Week: ", "amount" => $open_this_week, "label" => "label-warning", "icon" => "fas fa-folder-plus"),
-        array("title" => "This Week: ", "amount" => $closed_this_week, "label" => "label-success", "icon" => "fas fa-folder"),
-        array("title" => "This Month: ", "amount" => $open_this_month, "label" => "label-warning", "icon" => "fas fa-folder-plus"),
-        array("title" => "This Month: ", "amount" => $closed_this_month, "label" => "label-success", "icon" => "fas fa-folder"),
-        array("title" => "All: ", "amount" => $all_todos, "label" => "label-info", "icon" => "fas fa-globe-europe")
-    );
-}
-
-function grk_Week_Range($DateString, $FirstDay = 6) {
-    if (empty($DateString) === TRUE) {
-        $DateString = date('Y-m-d');
-    }
-    $Days = array(
-        0 => 'monday',
-        1 => 'tuesday',
-        2 => 'wednesday',
-        3 => 'thursday',
-        4 => 'friday',
-        5 => 'saturday',
-        6 => 'sunday'
-    );
-    $DT_Min = new DateTime('last ' . (isset($Days[$FirstDay]) === TRUE ? $Days[$FirstDay] : $Days[6]) . ' ' . $DateString);
-    $DT_Max = clone($DT_Min);
-    return array(
-        $DT_Min->modify('+1 day')->format('Y-m-d'),
-        $DT_Max->modify('+7 days')->format('Y-m-d')
-    );
-}
-
-function grk_Month_Range($DateString, $FirstDay = 1) {
-    if (empty($DateString) === TRUE) {
-        $DateString = date('Y-m-d');
-    }
-    $DT_Min = new DateTime('now');
-    $DT_Max = clone($DT_Min);
-    return array(
-        $DT_Min->format('Y-m-01'),
-        $DT_Max->format('Y-m-t')
-    );
-}
 
 function getJob(string $url, string $user, string $token){
     $ch = curl_init();
@@ -257,6 +165,7 @@ function getJob(string $url, string $user, string $token){
     curl_close($ch);
     return json_decode($output);
 }
+
 
 function startsWith($string, $startString) {
     $len = strlen($startString);
