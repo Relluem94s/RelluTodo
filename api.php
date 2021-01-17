@@ -63,10 +63,7 @@ if (filter_has_var(INPUT_GET, "todo")) {
             $sql .= ' where t.text like("%' . $search . '%");';
         }
 
-        $todos = loadSQL($sql);
-        $todos_with_links = genLinks($todos);
-        $todos_with_links_and_searchlabels = genSearchLabel($todos_with_links);
-        echo json_encode($todos_with_links_and_searchlabels);
+        echo json_encode(loadSQL($sql));
     }
 
     // Delete or Restore Todo
@@ -99,13 +96,8 @@ if (filter_has_var(INPUT_GET, "todo")) {
 
     // Load Todos
     if (filter_has_var(INPUT_GET, "todos")) {
-        $todos = loadSQL(loadFile("assets/sql/getTodos.sql"));
-       // $todos_with_links = genLinks($todos);
-       // $todos_with_links_and_searchlabels = genSearchLabel($todos_with_links);
-       // echo json_encode($todos_with_links_and_searchlabels);
-        echo json_encode($todos);
+        echo json_encode(loadSQL(loadFile("assets/sql/getTodos.sql")));
     }
-
     
     //Load Stats
     if (filter_has_var(INPUT_GET, "stats")) {
