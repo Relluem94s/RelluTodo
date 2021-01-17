@@ -100,9 +100,10 @@ if (filter_has_var(INPUT_GET, "todo")) {
     // Load Todos
     if (filter_has_var(INPUT_GET, "todos")) {
         $todos = loadSQL(loadFile("assets/sql/getTodos.sql"));
-        $todos_with_links = genLinks($todos);
-        $todos_with_links_and_searchlabels = genSearchLabel($todos_with_links);
-        echo json_encode($todos_with_links_and_searchlabels);
+       // $todos_with_links = genLinks($todos);
+       // $todos_with_links_and_searchlabels = genSearchLabel($todos_with_links);
+       // echo json_encode($todos_with_links_and_searchlabels);
+        echo json_encode($todos);
     }
 
     
@@ -255,58 +256,6 @@ function grk_Month_Range($DateString, $FirstDay = 1) {
     );
 }
 
-function genLinks($array) {
-    $out = array();
-    foreach ($array as $k => $v) {
-        $links = array();
-        if (isset($v["text"])) {
-            $temp = explode(" ", str_replace("\r", " ", str_replace("\n", " ", $v["text"])));
-            if (is_array($temp)) {
-                foreach ($temp as $k2 => $v2) {
-                    if (startsWith($v2, "http")) {
-                        $short_temp = explode("//", $v2);
-
-                        if (isset($short_temp[1])) {
-                            $short = $short_temp[1];
-                            $links[] = array("link" => $v2, "short" => $short);
-                        }
-                    }
-                }
-            }
-        }
-        $v["links"] = $links;
-        $out[] = $v;
-    }
-    return $out;
-}
-
-function genSearchLabel($array) {
-    $out = array();
-    foreach ($array as $k => $v) {
-
-        $labels = array();
-
-        if (isset($v["text"])) {
-            $temp = explode(" ", str_replace("\r", " ", str_replace("\n", " ", str_replace("\t", " ", $v["text"]))));
-            if (is_array($temp)) {
-                foreach ($temp as $k2 => $v2) {
-                    if (startsWith($v2, "#")) {
-                        $start = strpos($v2, "?");
-                        $label = $v2;
-                        $label = str_replace("#", "", $label);
-
-                        $labels[] = $label;
-                    }
-                }
-            }
-        }
-        $v["searchlabels"] = $labels;
-        $out[] = $v;
-    }
-    return $out;
-}
-
-
 function getJob(string $url, string $user, string $token){
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -316,7 +265,6 @@ function getJob(string $url, string $user, string $token){
     curl_close($ch);
     return json_decode($output);
 }
-
 
 function startsWith($string, $startString) {
     $len = strlen($startString);
