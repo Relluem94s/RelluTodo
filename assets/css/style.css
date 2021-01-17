@@ -3,11 +3,12 @@ div.sidebar{
     top:65px;
     right:0px;
     padding:15px;
-    border-left:1px solid #aaa;
-    border-top:1px solid #aaa;
-    border-bottom:1px solid #aaa;
-    background-color:#eee;
+    border-left:1px solid #ddd;
+    border-top:1px solid #ddd;
+    border-bottom:1px solid #ddd;
+    background-color:#f9f9f9;
     border-radius:20px 0px 0px 20px;
+    font-size: 16px;
 }
 
 div.sidebar div.refresh{
@@ -22,9 +23,36 @@ div.sidebar ul.job{
     padding-right: 15px;
 }
 
-div.sidebar div.job img{
-    width:16px;
+div.sidebar ul.job button.build{
+    background-color:transparent; 
+    color:#98D801;
+    padding:0px;
+    margin:0px!important;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 16px;
 }
+
+div.sidebar ul.job li i.stable{
+    color:#98d801;
+} 
+
+div.sidebar ul.job li i.unstable{
+    color:#f37d00;
+} 
+
+div.sidebar ul.job li i.failed{
+    color:#e33b2e;
+} 
+
+div.sidebar ul.job li i.unsuccessful{
+    color:#797472;
+} 
+
+div.sidebar ul.job li i.running{
+    color:#48B3b1;
+} 
+
 
 div.container table.todoList textarea{
     resize:none;
@@ -79,7 +107,7 @@ div.container table.todoList span.stats {
 
 .navbar-inverse .navbar-brand{
     color:#fff !important;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
 }
 
@@ -90,7 +118,11 @@ div.container table.todoList span.stats {
 
 .navbar-inverse .navbar-nav > li > a {
     color:#fff !important;
-    font-size: 20px;
+    font-size: 16px;
+}
+
+.navbar-inverse .navbar-nav > li > a > i {
+    font-size: 18px
 }
 
 .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
