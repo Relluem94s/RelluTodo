@@ -77,10 +77,11 @@
                     <li>
                         <a href="{{job.url}}" target="_blank">{{job.name}}</a>
                     </li>
-                    <li ng-repeat="build in job.builds">
-                        <i class="far fa-question-circle" style="color:yellow" ng-if="job.lastUnstableBuild.number == build.number"></i> 
-                        <i class="far fa-times-circle" style="color:red" ng-if="job.lastFailedBuild.number == build.number"></i> 
-                        <i class="far fa-check-circle" style="color:green" ng-if="job.lastStableBuild.number == build.number || !(job.lastFailedBuild.number == build.number)"></i> 
+                    <li ng-repeat="build in job.builds" ng-if="!(job.nextBuildNumber -1 !== build.number && job.lastFailedBuild.number !== build.number && job.lastUnstableBuild.number !== build.number && job.lastCompletedBuild.number !== build.number)">
+                        <i class="fas fa-check-circle" style="color:#98d801;" title="Stable" ng-if=" job.lastStableBuild.number === build.number"></i>
+                        <i class="fas fa-info-circle" style="color:#f37d00;" title="Unstable" ng-if="job.lastUnstableBuild.number === build.number"></i> 
+                        <i class="fas fa-times-circle" style="color:#e33b2e;" title="Failed" ng-if="job.lastFailedBuild.number === build.number"></i>
+                        <i class="fas fa-spinner fa-spin" style="color:#48B3b1;" title="Running..." ng-if="job.nextBuildNumber -1 === build.number && job.lastStableBuild.number !== build.number && job.lastFailedBuild.number !== build.number && job.lastUnstableBuild.number !== build.number"></i>
                         <a href="{{build.url}}" target="_blank">{{build.number}}</a>
                     </li>
                 </ul>
@@ -88,8 +89,6 @@
                     <button class="btn btn-primary" ng-click="load()"><i class="fas fa-sync"></i></button>
                 </div>
             </div>
-
-
         </div>
     </body>
 </html>
