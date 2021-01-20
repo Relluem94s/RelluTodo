@@ -1,6 +1,6 @@
 {
   "name": "rellutodo",
-  "version": "1.5",
+  "version": "1.5.0",
   "description": "Todolist Add, Edit, Delete and Restore Todos; Labels for URLS for easy Link opening; Create Categories by adding # to a word. Click on the Label below the edit field and all Todos with the same category getting displayed; Search Function; Customizable Shortcuts for the Navigationbar",
   "main": "index.html",
   "dependencies": {
