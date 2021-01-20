@@ -1,0 +1,47 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "d187a6c0a0c7714ad63e24d0667d0e9d",
+    "packages": [
+        {
+            "name": "relluem94/relludatabase",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Relluem94/RelluDatabase.git",
+                "reference": "12f2117e9b9c24646ee6e6917f584ebe9fd8cc15"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Relluem94/RelluDatabase/zipball/12f2117e9b9c24646ee6e6917f584ebe9fd8cc15",
+                "reference": "12f2117e9b9c24646ee6e6917f584ebe9fd8cc15",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "authors": [
+                {
+                    "name": "Relluem94",
+                    "email": "github@relluem94.de"
+                }
+            ],
+            "support": {
+                "source": "https://github.com/Relluem94/RelluDatabase/tree/master",
+                "issues": "https://github.com/Relluem94/RelluDatabase/issues"
+            },
+            "time": "2021-01-20T19:58:08+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
+}

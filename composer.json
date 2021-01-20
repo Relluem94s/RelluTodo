@@ -1,0 +1,22 @@
+{
+    "name": "relluem94/rellutodo",
+    "authors": [
+        {
+            "name": "Relluem94",
+            "email": "github@relluem94.de"
+        }
+    ],
+    "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/Relluem94/RelluDatabase.git"
+    }
+  ],
+  "minimum-stability": "dev",
+    "require": {
+      "php": ">=7.0.0"
+  },
+  "require": {
+  	"relluem94/relludatabase" : "master"
+  }
+}
