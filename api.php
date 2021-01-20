@@ -1,9 +1,14 @@
 <?php
 
+
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 ini_set('display_errors', E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
 $config = parse_ini_file("config.ini");
+
+
+
+include "./vendor/relluem94/relludatabase/Database.php";
 
 
 header("Content-type: application/json; charset=utf-8");
@@ -39,84 +44,55 @@ if (filter_has_var(INPUT_GET, "jenkins")) {
 }
 
 if (filter_has_var(INPUT_GET, "todo")) {
-    $db_link = mysqli_connect($config["db_host"], $config["db_user"], $config["db_password"], $config["db_schema"]);
-    $address = mysqli_real_escape_string($db_link, filter_input(INPUT_SERVER, "REMOTE_ADDR"));
+$db = new Database($config["db_host"], $config["db_user"], $config["db_password"], $config["db_schema"]);
+
+    
+    $address = filter_input(INPUT_SERVER, "REMOTE_ADDR");
     if (filter_has_var(INPUT_POST, "id") && filter_has_var(INPUT_POST, "text")) {
-        $id = mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT));
-        $text = stripslashes((mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "text", FILTER_SANITIZE_SPECIAL_CHARS))));
+        $id = filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
+        $text = stripslashes(filter_input(INPUT_POST, "text", FILTER_SANITIZE_SPECIAL_CHARS));
         if (!empty($id) && !empty($text)) {
-            $statment = mysqli_prepare($db_link, loadFile("assets/sql/updateTodo.sql"));
-            $statment->bind_param("ssi", $text, $address, $id);
-            $statment->execute();
-            $statment->close();
-            echo mysqli_error($db_link);
+            echo $db->update("assets/sql/updateTodo.sql", array($text, $address, $id));
         }
     }
 
     // Insert Todo
     else if (filter_has_var(INPUT_POST, "todo")) {
-        $todo = stripslashes((mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "todo", FILTER_SANITIZE_SPECIAL_CHARS))));
+        $todo = stripslashes(filter_input(INPUT_POST, "todo", FILTER_SANITIZE_SPECIAL_CHARS));
         if (!empty($todo)) {
-            $statment = mysqli_prepare($db_link, loadFile("assets/sql/insertTodo.sql"));
-            $statment->bind_param("ss", $todo, $address);
-            $statment->execute();
-            $statment->close();
-            echo mysqli_error($db_link);
+            echo $db->insert("assets/sql/insertTodo.sql", array($todo, $address));
         }
     }
 
     // Search Todo
     else if (filter_has_var(INPUT_POST, "search")) {
-        $search = (mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "search", FILTER_SANITIZE_STRING)));
-        $sql = loadFile("assets/sql/searchTodos.sql");
-        if (is_numeric($search)) {
-            $sql .= ' where t.id =' . $search . ';';
-        } else {
-            $sql .= ' where t.text like("%' . $search . '%");';
-        }
-
-        echo json_encode(loadSQL($sql));
+        $search = filter_input(INPUT_POST, "search", FILTER_SANITIZE_STRING);
+        echo json_encode($db->select(is_numeric($search) ? "assets/sql/searchTodosById.sql" : "assets/sql/searchTodosByText.sql", is_numeric($search) ? array($search) : array("%" . $search . "%")));
     }
 
     // Delete or Restore Todo
     else if (filter_has_var(INPUT_POST, "id")) {
-        $id = mysqli_real_escape_string($db_link, filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT));
+        $id = filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
         if (!empty($id)) {
-            $statment = mysqli_prepare($db_link, loadFile("assets/sql/getTodoById.sql"));
-            $statment->bind_param("i", $id);
-            $statment->execute();
-            $result = $statment->get_result();
-            $statment->close();
-            while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-                $del = $row["deleted"];
-            }
-            if ($del == 'null' or $del == '0' or $del == 0) {
-                $statment_del = mysqli_prepare($db_link, loadFile("assets/sql/deleteTodo.sql"));
-                $statment_del->bind_param("si", $address, $id);
-                $statment_del->execute();
-                $statment_del->close();
+            $todo = $db->select("assets/sql/getTodoById.sql", array($id));
+            if ($todo[0] !== null && ($todo[0]["deleted"] == 'null' or $todo[0]["deleted"] == '0' or $todo[0]["deleted"] == 0)) {
+                echo $db->update("assets/sql/deleteTodo.sql", array($address, $id));
             } else {
-                $statment_del = mysqli_prepare($db_link, loadFile("assets/sql/restoreTodo.sql"));
-                $statment_del->bind_param("si", $address, $id);
-                $statment_del->execute();
-                $statment_del->close();
+                echo $db->update("assets/sql/restoreTodo.sql", array($address, $id));
             }
-            echo mysqli_error($db_link);
         }
     }
 
-
     // Load Todos
     if (filter_has_var(INPUT_GET, "todos")) {
-        echo json_encode(loadSQL(loadFile("assets/sql/getTodos.sql")));
+        echo json_encode($db->select("assets/sql/getTodos.sql", array()));
     }
 
     //Load Stats
     if (filter_has_var(INPUT_GET, "stats")) {
-        echo json_encode(stats());
+        echo json_encode($db->select("assets/sql/getStatsTodos.sql" , array())[0]);
     }
-
-    mysqli_close($db_link);
+    $db->close();
 }
 
 function loadFile($filename) {
@@ -144,9 +120,12 @@ function decodeRow(array $row) {
     return $row_data;
 }
 
+/**
+ * @deprecated will be removed
+ */
 function loadTodosCount() {
     global $db_link;
-
+    
     $statment = mysqli_prepare($db_link, loadFile("assets/sql/getTotalTodoCount.sql"));
     $statment->execute();
 
@@ -161,10 +140,6 @@ function loadTodosCount() {
         $result->close();
     }
     return $amount;
-}
-
-function stats() {
-    return loadSQL(loadFile("assets/sql/getStatsTodos.sql"))[0];
 }
 
 function getJob(string $url, string $user, string $token) {
