@@ -1,24 +1,19 @@
 <?php
-
+header("Content-type: application/json; charset=utf-8");
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 ini_set('display_errors', E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
-$config = parse_ini_file("config.ini");
-
-
-
 include "./vendor/relluem94/relludatabase/Database.php";
 
-
-header("Content-type: application/json; charset=utf-8");
+$config = parse_ini_file("config.ini");
 
 if (filter_has_var(INPUT_GET, "nav")) {
-    echo loadFile("links.json");
+    echo file_get_contents("links.json");
 }
 
 if (filter_has_var(INPUT_GET, "jenkins")) {
-    $jobs_json = json_decode(loadFile("jenkins.json"));
+    $jobs_json = json_decode(file_get_contents("jenkins.json"));
     if (filter_has_var(INPUT_GET, "job")) {
         $job = filter_input(INPUT_GET, "job", FILTER_SANITIZE_URL);
         foreach ($jobs_json as $k => $v) {
@@ -32,21 +27,23 @@ if (filter_has_var(INPUT_GET, "jenkins")) {
         $users = array();
         $tokens = array();
         foreach ($jobs_json as $k => $v) {
-            if ($v->user === "USERNAME") {
-                break;
+            if ($v->link !== "https://JENKINSURL/job/JOB/api/json" && !isset($v->user)) {
+                $urls[] = $v->link;
+                $users[] = null;
+                $tokens[] = null;
             }
-            $urls[] = $v->link;
-            $users[] = $v->user;
-            $tokens[] = $v->token;
+            else if(isset($v->user) && $v->user !== "USERNAME"){
+                $urls[] = $v->link;
+                $users[] = (isset($v->user)) ? $v->user : null;
+                $tokens[] = (isset($v->token)) ? $v->token : null;
+            }
         }
         echo execCurls($urls, $users, $tokens);
     }
 }
 
 if (filter_has_var(INPUT_GET, "todo")) {
-$db = new Database($config["db_host"], $config["db_user"], $config["db_password"], $config["db_schema"]);
-
-    
+    $db = new Database($config["db_host"], $config["db_user"], $config["db_password"], $config["db_schema"]);
     $address = filter_input(INPUT_SERVER, "REMOTE_ADDR");
     if (filter_has_var(INPUT_POST, "id") && filter_has_var(INPUT_POST, "text")) {
         $id = filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
@@ -95,53 +92,6 @@ $db = new Database($config["db_host"], $config["db_user"], $config["db_password"
     $db->close();
 }
 
-function loadFile($filename) {
-    return file_get_contents($filename);
-}
-
-function loadSQL($sql) {
-    global $db_link;
-    $result = mysqli_query($db_link, $sql);
-    $todos = array();
-    if ($result && mysqli_num_rows($result) > 0) {
-        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-            $todos[] = decodeRow($row);
-        }
-        $result->close();
-    }
-    return $todos;
-}
-
-function decodeRow(array $row) {
-    $row_data = array();
-    foreach ($row as $k => $v) {
-        $row_data += array($k => html_entity_decode(($v), ENT_QUOTES | ENT_HTML5));
-    }
-    return $row_data;
-}
-
-/**
- * @deprecated will be removed
- */
-function loadTodosCount() {
-    global $db_link;
-    
-    $statment = mysqli_prepare($db_link, loadFile("assets/sql/getTotalTodoCount.sql"));
-    $statment->execute();
-
-    $result = $statment->get_result();
-    $statment->close();
-
-    $amount = 0;
-    if ($result && mysqli_num_rows($result) > 0) {
-        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-            $amount = $row['amount'];
-        }
-        $result->close();
-    }
-    return $amount;
-}
-
 function getJob(string $url, string $user, string $token) {
     return execCurl($url, $user, $token, false, "");
 }
@@ -153,29 +103,32 @@ function buildJob(string $url, string $user, string $token) {
 function execCurls(array $urls, array $users, array $tokens) {
     $mh = curl_multi_init();
     $opts = array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_TIMEOUT => 30, CURLOPT_CONNECTTIMEOUT => 60, CURLOPT_ENCODING => 'gzip', CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-    $j = 0;
     for ($i = 0; $i < sizeof($urls); $i++) {
         $ch = curl_init($urls[$i]);
         curl_setopt_array($ch, $opts);
-        curl_setopt($ch, CURLOPT_USERPWD, $users[$i] . ":" . $tokens[$i]);
+        if(isset($users[$i]) && $users[$i] !== null && isset($tokens[$i]) && $tokens[$i] !== null){
+            curl_setopt($ch, CURLOPT_USERPWD, $users[$i] . ":" . $tokens[$i]);
+        }
         curl_multi_add_handle($mh, $ch);
     }
+    return getCurlResults($mh);
+}
+
+function getCurlResults($mh){
     $results = array();
     do {
         while (($exec = curl_multi_exec($mh, $running)) == CURLM_CALL_MULTI_PERFORM);
         if ($exec != CURLM_OK) {
             break;
         }
-        while ($ch = curl_multi_info_read($mh)) {
-            $j++;
-            $ch = $ch['handle'];
+        while ($mch = curl_multi_info_read($mh)) {
+            $ch = $mch['handle'];
             $results[] = json_decode(curl_multi_getcontent($ch));
             curl_multi_remove_handle($mh, $ch);
             curl_close($ch);
         }
     } while ($running);
     curl_multi_close($mh);
-
     return json_encode($results);
 }
 
