@@ -5,9 +5,9 @@
 
 SELECT t.id, 
        t.`text`, 
-       Date_format(t.created, "%d.%m.%y %h:%i:%s") AS created, 
-       Date_format(t.updated, "%d.%m.%y %h:%i:%s") AS updated, 
-       Date_format(t.deleted, "%d.%m.%y %h:%i:%s") AS deleted, 
+       Date_format(t.created, "%d.%m.%y %H:%i:%s") AS created, 
+       Date_format(t.updated, "%d.%m.%y %H:%i:%s") AS updated, 
+       Date_format(t.deleted, "%d.%m.%y %H:%i:%s") AS deleted, 
        t.createdby, 
        t.updatedby, 
        t.deletedby 
