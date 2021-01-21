@@ -14,9 +14,14 @@
   ],
   "minimum-stability": "dev",
     "require": {
-      "php": ">=7.0.0"
+      "php": ">=7.0.0",
+      "ext-mysqli": "*",
+      "ext-curl": "*",
+      "relluem94/relludatabase" : "master"
   },
-  "require": {
-  	"relluem94/relludatabase" : "master"
+  "autoload": {
+    "classmap": [
+      "./vendor/relluem94/relludatabase/Database.php"
+    ]
   }
 }

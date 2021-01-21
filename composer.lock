@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d187a6c0a0c7714ad63e24d0667d0e9d",
+    "content-hash": "dcc5cd5bbe65bf536b85fc28fc95f6c7",
     "packages": [
         {
             "name": "relluem94/relludatabase",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Relluem94/RelluDatabase.git",
-                "reference": "12f2117e9b9c24646ee6e6917f584ebe9fd8cc15"
+                "reference": "4c85dd5e39133a5f433e9442d768e955f7d962ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Relluem94/RelluDatabase/zipball/12f2117e9b9c24646ee6e6917f584ebe9fd8cc15",
-                "reference": "12f2117e9b9c24646ee6e6917f584ebe9fd8cc15",
+                "url": "https://api.github.com/repos/Relluem94/RelluDatabase/zipball/4c85dd5e39133a5f433e9442d768e955f7d962ff",
+                "reference": "4c85dd5e39133a5f433e9442d768e955f7d962ff",
                 "shasum": ""
             },
             "default-branch": true,
@@ -32,7 +32,7 @@
                 "source": "https://github.com/Relluem94/RelluDatabase/tree/master",
                 "issues": "https://github.com/Relluem94/RelluDatabase/issues"
             },
-            "time": "2021-01-20T19:58:08+00:00"
+            "time": "2021-01-20T20:27:56+00:00"
         }
     ],
     "packages-dev": [],
@@ -41,7 +41,11 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=7.0.0",
+        "ext-mysqli": "*",
+        "ext-curl": "*"
+    },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"
 }
