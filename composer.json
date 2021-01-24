@@ -7,21 +7,21 @@
         }
     ],
     "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/Relluem94/RelluDatabase.git"
-    }
-  ],
-  "minimum-stability": "dev",
+        {
+            "type": "vcs",
+            "url": "https://github.com/Relluem94/RelluDatabase.git"
+        }
+    ],
+    "minimum-stability": "dev",
     "require": {
-      "php": ">=7.0.0",
-      "ext-mysqli": "*",
-      "ext-curl": "*",
-      "relluem94/relludatabase" : "master"
-  },
-  "autoload": {
-    "classmap": [
-      "./vendor/relluem94/relludatabase/Database.php"
-    ]
-  }
+        "php": ">=7.0.0",
+        "ext-mysqli": "*",
+        "ext-curl": "*",
+        "relluem94/relludatabase": "master"
+    },
+    "autoload": {
+        "classmap": [
+            "./vendor/relluem94/relludatabase/Database.php"
+        ]
+    }
 }
