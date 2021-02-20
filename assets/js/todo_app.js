@@ -1,4 +1,4 @@
-var app = angular.module("tools", []);
+var app = angular.module("rellutodo", []);
 
 var transformRequest = transformrequest = function (obj) {
     var str = [];
@@ -163,7 +163,7 @@ app.controller("todoList", function ($scope, $http) {
                     if (innerKey === "text") {
                         entry["searchlabels"] = [];
                         entry["links"] = [];
-                        var text = (data[outerKey][innerKey]).split(/\s+/g);
+                        var text = ((data[outerKey][innerKey]) +"") .split(/\s+/g);
                         for (var i = 0; i <= text.length; i++) {
                             if (text[i] !== undefined && text[i].startsWith("http")) {
                                 entry["links"].push({"link": text[i], "short": text[i].split("//")[1].replace("www.", "")});
