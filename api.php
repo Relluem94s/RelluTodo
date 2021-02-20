@@ -64,7 +64,7 @@ if (filter_has_var(INPUT_GET, "todo")) {
     // Search Todo
     else if (filter_has_var(INPUT_POST, "search")) {
         $search = filter_input(INPUT_POST, "search", FILTER_SANITIZE_STRING);
-        echo json_encode($db->select(is_numeric($search) ? "assets/sql/searchTodosById.sql" : "assets/sql/searchTodosByText.sql", is_numeric($search) ? array($search) : array("%" . $search . "%")));
+        echo json_encode($db->select(is_numeric($search) ? "assets/sql/searchTodosById.sql" : "assets/sql/searchTodosByText.sql", is_numeric($search) ? array($search) : array("%" . $search . "%")), JSON_NUMERIC_CHECK);
     }
 
     // Delete or Restore Todo
@@ -82,12 +82,12 @@ if (filter_has_var(INPUT_GET, "todo")) {
 
     // Load Todos
     if (filter_has_var(INPUT_GET, "todos")) {
-        echo json_encode($db->select("assets/sql/getTodos.sql", array()));
+        echo json_encode($db->select("assets/sql/getTodos.sql", array()), JSON_NUMERIC_CHECK);
     }
 
     //Load Stats
     if (filter_has_var(INPUT_GET, "stats")) {
-        echo json_encode($db->select("assets/sql/getStatsTodos.sql" , array())[0]);
+        echo json_encode($db->select("assets/sql/getStatsTodos.sql" , array())[0], JSON_NUMERIC_CHECK);
     }
     $db->close();
 }
