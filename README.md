@@ -1,7 +1,7 @@
 ![RelluTodo](https://img.relluem94.de/logos/rellutodo.png?)
 
 ## Install
-1. Clone Repo ```git clone https://github.com/Relluem94-de/RelluTodo.git``` 
+1. Clone Repo ```git clone https://github.com/Relluem94s/RelluTodo.git``` 
 1. Run ```npm install``` to get js/css dependencies
 1. Run ```composer install``` to get php dependencies
 1. Execute /assets/scripts/todo.sql to create the necessary Table (Create Schema)
