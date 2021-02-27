@@ -133,3 +133,20 @@ div.container table.todoList span.stats {
 button {
     margin-bottom: 8px !important;
 }
+
+.info_textfield{
+    resize: none;
+}
+
+#saveTodo{
+    height:64px;
+}
+
+.infoTodo{
+    height:64px;
+}
+
+.table-centered{
+    text-align: center !important;
+    vertical-align: middle !important;
+}
