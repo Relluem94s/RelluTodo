@@ -145,6 +145,12 @@ app.controller("todoList", function ($scope, $http) {
     $scope.restore = function (todo) {
         $scope.delete(todo);
     };
+    
+    $scope.infoData = null;
+    $scope.info = function (todo){
+        $scope.infoData = todo;
+    };
+    
 
     $scope.copy = function (text) {
         var dummy = document.createElement("textarea");
