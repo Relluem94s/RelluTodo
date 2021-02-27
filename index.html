@@ -32,18 +32,19 @@
                 </ul>
             </div>
         </nav>
-        <div class="container">
-            <table class="table table-striped table-bordered todoList" ng-controller="todoList">
+        <div class="container" ng-controller="todoList">
+            <table class="table table-striped table-bordered todoList">
                 <tr>
-                    <th class="col-sm-8">
+                    <th class="col-sm-12">
                         <textarea class="form-control input" name="todo" ng-model="todo" placeholder="Todo Description"></textarea>
                     </th>
-                    <th class="col-sm-1">
-                        <button title="Save" type="button" ng-disabled="!todo" class="btn btn-success" ng-click="save(todo)"><i class="fas fa-paper-plane"></i></button>
+                    <th class="col-sm-1 table-centered">
                         <button title="Search" type="button" ng-disabled="!todo" class="btn btn-info" ng-click="search(todo)"><i class="fas fa-search"></i></button>
                         <button title="Reload Todos" type="button" class="btn btn-primary" ng-click="refresh()"><i class="fas fa-sync"></i></button>
                     </th>
-                    <th class="col-sm-5"></th>
+                    <th class="col-sm-1 table-centered">
+                        <button title="Save" type="button" ng-disabled="!todo" class="btn btn-success" ng-click="save(todo)" id="saveTodo"><i class="fas fa-paper-plane"></i></button>
+                    </th>
                 </tr>
                 <tr>
                     <th colspan="3">
@@ -58,25 +59,81 @@
                     </th>
                 </tr>
                 <tr ng-repeat="todo in todos| orderBy:'-id'| orderBy:'deletedby'" id="{{todo.id}}">
-                    <td class="col-sm-8">
-                        <textarea title="ID: {{todo.id}}" ng-disabled="todo.deletedby" class="form-control" ng-model="todo.text">{{todo.text}}</textarea>
+                    <td class="col-sm-12">
+                        <textarea ng-disabled="todo.deletedby" class="form-control" ng-model="todo.text">{{todo.text}}</textarea>
                         <a ng-repeat="link in todo.links" target="_blank" href="{{link.link}}" title="{{link.short}}"><span class="badge"><i class="fas fa-link"></i>&nbsp;{{link.short}}</span></a>
                         <span class="label label-info" title="{{label}}"  ng-repeat="label in todo.searchlabels track by $index" ng-click="search(label)"><i class="fas fa-hashtag"></i>&nbsp;{{label}}</span>
 
-                        <input type="hidden" name="id" class="btn btn-info" value="{{todo.id}}">
+                    </td>
+                    <td class="col-sm-1">
+                        <button title="Info ID: {{todo.id}}" type="button" class="btn btn-info infoTodo" ng-click="info(todo)" data-toggle="modal" data-target="#infoModal"><i class="fas fa-info-circle"></i></button>
                     </td>
                     <td class="col-sm-1">
                         <button title="Edit" ng-if="!todo.deletedby" type="button" class="btn btn-warning" ng-click="edit(todo)"><i class="fas fa-pen-square"></i></button>
-                        <button title="Delete" ng-if="!todo.deletedby" type="button" class="btn btn-danger" ng-click="delete(todo)"><i class="fas fa-check-square"></i></button>
-                        <button title="Restore" ng-if="todo.deletedby" type="button" class="btn btn-info" ng-click="restore(todo)"><i class="fas fa-square"></i></button>
-                    </td>
-                    <td class="col-sm-5">
-                        <p>Created by <a href="http://{{todo.createdby}}" target="_blank">{{todo.createdby}}</a> {{todo.created}}</p>
-                        <p ng-if="todo.updatedby">Updated by <a href="http://{{todo.updatedby}}" target="_blank">{{todo.updatedby}}</a> {{todo.updated}}</p>
-                        <p ng-if="todo.deletedby">Deleted by <a href="http://{{todo.deletedby}}" target="_blank">{{todo.deletedby}}</a> {{todo.deleted}}</p>
+                        <button title="Delete" ng-if="!todo.deletedby" type="button" class="btn btn-success" ng-click="delete(todo)"><i class="fas fa-check-square"></i></button>
+                        <button title="Restore" ng-if="todo.deletedby" type="button" class="btn btn-danger" ng-click="restore(todo)"><i class="fas fa-square"></i></button>
                     </td>
                 </tr>
             </table>
+            
+
+            
+            
+            
+<!-- Modal -->
+<div class="modal fade " id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="infoModalLabel">Info</h4>
+      </div>
+      <div class="modal-body">
+          <table class="table table-bordered table-striped">
+              <tr>
+                  <th>ID</th>
+                  <td>{{infoData.id}}</td>
+              </tr>
+              <tr>
+                  <th>Created</th>
+                  <td>{{infoData.created}}</td>
+              </tr>
+              <tr>
+                  <th>Created by</th>
+                  <td>{{infoData.createdby}}</td>
+              </tr>
+              <tr>
+                  <th>Updated</th>
+                  <td>{{infoData.updated}}</td>
+              </tr>
+              <tr>
+                  <th>Updated by</th>
+                  <td>{{infoData.updatedby}}</td>
+              </tr>
+              <tr>
+                  <th>Deleted</th>
+                  <td>{{infoData.deleted}}</td>
+              </tr>
+              <tr>
+                  <th>Deleted by</th>
+                  <td>{{infoData.deletedby}}</td>
+              </tr>
+              <tr>
+                  <th>Text</th>
+                  <td><textarea rows="4" class="form-control info_textfield" disabled>{{infoData.text}}</textarea></td>
+              </tr>
+          </table>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+            
+            
+            
         </div>
         <div ng-controller="sideBar">
             <div class="sidebar" ng-hide="isObjectEmpty(jenkins)">
