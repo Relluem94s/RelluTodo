@@ -39,7 +39,7 @@
                         <textarea class="form-control input" name="todo" ng-model="todo" placeholder="Todo Description"></textarea>
                     </th>
                     <th class="col-sm-1 table-centered">
-                        <button title="Search" type="button" ng-disabled="!todo" class="btn btn-info" ng-click="search(todo)"><i class="fas fa-search"></i></button>
+                        <button title="Search" type="button" ng-disabled="!todo" class="btn btn-primary" ng-click="search(todo)"><i class="fas fa-search"></i></button>
                         <button title="Reload Todos" type="button" class="btn btn-primary" ng-click="refresh()"><i class="fas fa-sync"></i></button>
                     </th>
                     <th class="col-sm-1 table-centered">
@@ -71,7 +71,7 @@
                     <td class="col-sm-1">
                         <button title="Edit" ng-if="!todo.deletedby" type="button" class="btn btn-warning" ng-click="edit(todo)"><i class="fas fa-pen-square"></i></button>
                         <button title="Delete" ng-if="!todo.deletedby" type="button" class="btn btn-success" ng-click="delete(todo)"><i class="fas fa-check-square"></i></button>
-                        <button title="Restore" ng-if="todo.deletedby" type="button" class="btn btn-danger" ng-click="restore(todo)"><i class="fas fa-square"></i></button>
+                        <button title="Restore" ng-if="todo.deletedby" type="button" class="btn btn-primary" ng-click="restore(todo)"><i class="fas fa-square"></i></button>
                     </td>
                 </tr>
             </table>
