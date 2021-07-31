@@ -14,6 +14,7 @@
 * Add, Edit, Delete and Restore Todos
 * Labels for URLS for easy Link opening
 * Create Categories by adding # to a word. Click on the Label below the edit field and all Todos with the same category getting displayed
+* Add @name to assign a Todo to a user
 * Search Function
 * Customizable Links in the Navigationbar with icons from [Fontawsome](https://fontawesome.com/icons?d=gallery)
 
