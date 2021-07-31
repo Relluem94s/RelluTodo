@@ -169,6 +169,7 @@ app.controller("todoList", function ($scope, $http) {
                     if (innerKey === "text") {
                         entry["searchlabels"] = [];
                         entry["links"] = [];
+                        entry["users"] = [];
                         var text = ((data[outerKey][innerKey]) +"") .split(/\s+/g);
                         for (var i = 0; i <= text.length; i++) {
                             if (text[i] !== undefined && text[i].startsWith("http")) {
@@ -176,6 +177,9 @@ app.controller("todoList", function ($scope, $http) {
                             }
                             if (text[i] !== undefined && text[i].startsWith("#")) {
                                 entry["searchlabels"].push(text[i].replace("#", ""));
+                            }
+                            if (text[i] !== undefined && text[i].startsWith("@")) {
+                                entry["users"].push(text[i].replace("@", ""));
                             }
                         }
                     }

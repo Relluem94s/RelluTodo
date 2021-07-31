@@ -62,6 +62,7 @@
                     <td class="col-sm-12">
                         <textarea ng-disabled="todo.deletedby" class="form-control" ng-model="todo.text">{{todo.text}}</textarea>
                         <a ng-repeat="link in todo.links" target="_blank" href="{{link.link}}" title="{{link.short}}"><span class="badge"><i class="fas fa-link"></i>&nbsp;{{link.short}}</span></a>
+                        <span class="label label-primary" title="{{user}}"  ng-repeat="user in todo.users track by $index" ng-click="search('@' + user)"><i class="fas fa-user"></i>&nbsp;{{user}}</span>
                         <span class="label label-info" title="{{label}}"  ng-repeat="label in todo.searchlabels track by $index" ng-click="search(label)"><i class="fas fa-hashtag"></i>&nbsp;{{label}}</span>
 
                     </td>
