@@ -1,0 +1,42 @@
+[
+    {
+        "class": "danger",
+        "icon": "fa-folder-open",
+        "text": "Todos: {{stats.open}}"
+    },
+    {
+        "class": "warning",
+        "icon": "fa-folder-plus",
+        "text": "Today: {{stats.createdDay}}"
+    },
+    {
+        "class": "success",
+        "icon": "fa-folder",
+        "text": "Today: {{stats.deletedDay}}"
+    },
+    {
+        "class": "warning",
+        "icon": "fa-folder-plus",
+        "text": "This Week: {{stats.createdWeek}}"
+    },
+    {
+        "class": "success",
+        "icon": "fa-folder",
+        "text": "This Week: {{stats.deletedWeek}}"
+    },
+    {
+        "class": "warning",
+        "icon": "fa-folder-plus",
+        "text": "This Month: {{stats.createdMonth}}"
+    },
+    {
+        "class": "success",
+        "icon": "fa-folder",
+        "text": "This Month: {{stats.deletedMonth}}"
+    },
+    {
+        "class": "info",
+        "icon": "fa-globe-europe",
+        "text": "All: {{stats.total}}"
+    }
+]

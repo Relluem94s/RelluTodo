@@ -1,37 +1,7 @@
 <html ng-app="rellutodo">
-    <head>
-        <title>RelluTodo</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
-        <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.css">
-        <link rel="stylesheet" href="assets/css/style.css">
-        <script src="node_modules/jquery/dist/jquery.min.js"></script>
-        <script src="node_modules/angular/angular.min.js"></script>
-        <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="assets/js/todo_app.js"></script>
-        <link rel="icon" href="assets/img/rellutodo_icon.png" type="image/x-icon">
-        <link rel="shortcut icon" href="assets/img/rellutodo_icon.png" type="image/x-icon">
-    </head>
+    <?php require_once ("assets/modules/head.php"); ?>
     <body>
-        <nav class="navbar navbar-inverse" role="navigation" ng-controller="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex2-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" title="25.09.2021" target="_blank" href="https://github.com/Relluem94s/RelluTodo">RelluTodo</a>
-            </div>
-            <div class="collapse navbar-collapse navbar-ex2-collapse">
-                <ul class="nav navbar-nav">
-                    <li ng-repeat="nav in navigation">
-                        <a ng-if="nav.link" target="_blank" href="{{nav.link}}"><i ng-if="nav.icon" class="{{nav.icon}}"></i> {{nav.title}}</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        <?php require_once ("assets/modules/nav.php"); ?>
         <div class="container" ng-controller="todoList">
             <table class="table table-striped table-bordered todoList">
                 <tr>
@@ -48,14 +18,7 @@
                 </tr>
                 <tr>
                     <th colspan="3">
-                        <span class="stats label label-danger"><i class="fas fa-folder-open"></i> Todos: {{stats.open}}</span>
-                        <span class="stats label label-warning"><i class="fas fa-folder-plus"></i> Today: {{stats.createdDay}}</span>
-                        <span class="stats label label-success"><i class="fas fa-folder"></i> Today: {{stats.deletedDay}}</span>
-                        <span class="stats label label-warning"><i class="fas fa-folder-plus"></i> This Week: {{stats.createdWeek}}</span>
-                        <span class="stats label label-success"><i class="fas fa-folder"></i> This Week: {{stats.deletedWeek}}</span>
-                        <span class="stats label label-warning"><i class="fas fa-folder-plus"></i> This Month: {{stats.createdMonth}}</span>
-                        <span class="stats label label-success"><i class="fas fa-folder"></i> This Month: {{stats.deletedMonth}}</span>
-                        <span class="stats label label-info"><i class="fas fa-globe-europe"></i> All: {{stats.total}}</span>
+                        <?php require_once ("assets/modules/stats.php"); ?>
                     </th>
                 </tr>
                 <tr ng-repeat="todo in todos| orderBy:'-id'| orderBy:'deletedby'" id="{{todo.id}}">
@@ -76,85 +39,10 @@
                     </td>
                 </tr>
             </table>
-            
-
-            
-            
-            
-<!-- Modal -->
-<div class="modal fade " id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="infoModalLabel">Info</h4>
-      </div>
-      <div class="modal-body">
-          <table class="table table-bordered table-striped">
-              <tr>
-                  <th>ID</th>
-                  <td>{{infoData.id}}</td>
-              </tr>
-              <tr>
-                  <th>Created</th>
-                  <td>{{infoData.created}}</td>
-              </tr>
-              <tr>
-                  <th>Created by</th>
-                  <td>{{infoData.createdby}}</td>
-              </tr>
-              <tr>
-                  <th>Updated</th>
-                  <td>{{infoData.updated}}</td>
-              </tr>
-              <tr>
-                  <th>Updated by</th>
-                  <td>{{infoData.updatedby}}</td>
-              </tr>
-              <tr>
-                  <th>Deleted</th>
-                  <td>{{infoData.deleted}}</td>
-              </tr>
-              <tr>
-                  <th>Deleted by</th>
-                  <td>{{infoData.deletedby}}</td>
-              </tr>
-              <tr>
-                  <th>Text</th>
-                  <td><textarea rows="4" class="form-control info_textfield" disabled>{{infoData.text}}</textarea></td>
-              </tr>
-          </table>
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-            
-            
-            
+            <?php require_once ("assets/modules/modal.php"); ?>   
         </div>
         <div ng-controller="sideBar">
-            <div class="sidebar" ng-hide="isObjectEmpty(jenkins)">
-                <ul class="job" ng-repeat="job in jenkins | orderBy:'name'">
-                    <li>
-                        <a href="{{job.url}}" target="_blank">{{job.name}}</a><button title="Build" type="button" class="btn build" ng-click="build(job.url)"><i class="fas fa-play-circle"></i></button>
-                    </li>
-                    <li ng-repeat="build in job.builds" ng-if="!(job.nextBuildNumber -1 !== build.number && job.lastFailedBuild.number !== build.number && job.lastUnstableBuild.number !== build.number && job.lastCompletedBuild.number !== build.number)">
-                        <i class="fas fa-check-circle stable" title="Stable" ng-if=" job.lastStableBuild.number === build.number"></i>
-                        <i class="fas fa-info-circle unstable" title="Unstable" ng-if="job.lastUnstableBuild.number === build.number"></i> 
-                        <i class="fas fa-times-circle failed" title="Failed" ng-if="job.lastFailedBuild.number === build.number"></i>
-                        <i class="fas fa-circle unsuccessful" title="Unsuccessful" ng-if="job.lastUnsuccessfulBuild.number === build.number && job.lastFailedBuild.number !== build.number"></i>
-                        <i class="fas fa-spinner fa-spin running" title="Running..." ng-if="job.nextBuildNumber -1 === build.number && job.lastUnsuccessfulBuild.number !== build.number && job.lastStableBuild.number !== build.number && job.lastFailedBuild.number !== build.number && job.lastUnstableBuild.number !== build.number"></i>
-                        <a href="{{build.url}}" target="_blank">{{build.number}}</a>
-                    </li>
-                </ul>
-                <div class="refresh">
-                    <button class="btn btn-primary" ng-click="load()"><i class="fas fa-sync"></i></button>
-                </div>
-            </div>
+            <?php require_once ("assets/modules/sidebar.php"); ?>
         </div>
     </body>
 </html>
