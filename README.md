@@ -1,4 +1,4 @@
-![RelluTodo](https://img.relluem94.de/logos/rellutodo.png?)
+![RelluTodo](https://img.relluem94.de/logos/web/rellutodo.png?)
 
 ## Install
 1. Clone Repo ```git clone https://github.com/Relluem94s/RelluTodo.git``` 
