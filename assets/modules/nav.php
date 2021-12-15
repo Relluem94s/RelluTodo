@@ -6,7 +6,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" title="23.10.2021" target="_blank" href="https://github.com/Relluem94s/RelluTodo">RelluTodo</a>
+        <a class="navbar-brand" title="16.12.2021" target="_blank" href="https://github.com/Relluem94s/RelluTodo"><img src="assets/img/rellutodo.png" height="30"></a>
     </div>
     <div class="collapse navbar-collapse navbar-ex2-collapse">
         <ul class="nav navbar-nav">
