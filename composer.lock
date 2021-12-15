@@ -11,13 +11,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Relluem94/RelluDatabase.git",
-                "reference": "4c85dd5e39133a5f433e9442d768e955f7d962ff"
+                "url": "https://github.com/Relluem94s/RelluDatabase.git",
+                "reference": "fe62381d3df964924cbbc2fc30bba9fa5435617d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Relluem94/RelluDatabase/zipball/4c85dd5e39133a5f433e9442d768e955f7d962ff",
-                "reference": "4c85dd5e39133a5f433e9442d768e955f7d962ff",
+                "url": "https://api.github.com/repos/Relluem94s/RelluDatabase/zipball/fe62381d3df964924cbbc2fc30bba9fa5435617d",
+                "reference": "fe62381d3df964924cbbc2fc30bba9fa5435617d",
                 "shasum": ""
             },
             "default-branch": true,
@@ -29,10 +29,10 @@
                 }
             ],
             "support": {
-                "source": "https://github.com/Relluem94/RelluDatabase/tree/master",
-                "issues": "https://github.com/Relluem94/RelluDatabase/issues"
+                "source": "https://github.com/Relluem94s/RelluDatabase/tree/master",
+                "issues": "https://github.com/Relluem94s/RelluDatabase/issues"
             },
-            "time": "2021-01-20T20:27:56+00:00"
+            "time": "2021-12-15T23:39:02+00:00"
         }
     ],
     "packages-dev": [],
@@ -47,5 +47,5 @@
         "ext-curl": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }
