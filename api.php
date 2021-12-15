@@ -17,8 +17,8 @@ if (filter_has_var(INPUT_GET, "jenkins")) {
     if (filter_has_var(INPUT_GET, "job")) {
         $job = filter_input(INPUT_GET, "job", FILTER_SANITIZE_URL);
         foreach ($jobs_json as $k => $v) {
-            if ($v->link === $job . "api/json") {
-                echo buildJob($job, $v->user, $v->token);
+            if (str_replace("%20", "", $v->link) === $job . "api/json") {
+                echo buildJob(str_replace("api/json", "", $v->link), $v->user, $v->token);
                 break;
             }
         }
@@ -72,7 +72,7 @@ if (filter_has_var(INPUT_GET, "todo")) {
         $id = filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
         if (!empty($id)) {
             $todo = $db->select("assets/sql/getTodoById.sql", array($id));
-            if ($todo[0] !== null && ($todo[0]["deleted"] == 'null' or $todo[0]["deleted"] == '0' or $todo[0]["deleted"] == 0)) {
+            if ($todo[0] !== null && ($todo[0]["deleted"] == 'null' or $todo[0]["deleted"] == '0' or $todo[0]["deleted"] == 0 or $todo[0]["deleted"] == "")) {
                 echo $db->update("assets/sql/deleteTodo.sql", array($address, $id));
             } else {
                 echo $db->update("assets/sql/restoreTodo.sql", array($address, $id));
@@ -101,8 +101,11 @@ function buildJob(string $url, string $user, string $token) {
 }
 
 function execCurls(array $urls, array $users, array $tokens) {
+
+
+
     $mh = curl_multi_init();
-    $opts = array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_TIMEOUT => 30, CURLOPT_CONNECTTIMEOUT => 60, CURLOPT_ENCODING => 'gzip', CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+    $opts = array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_TIMEOUT => 30, CURLOPT_CONNECTTIMEOUT => 60, CURLOPT_ENCODING => 'gzip', CURLOPT_IPRESOLVE);
     for ($i = 0; $i < sizeof($urls); $i++) {
         $ch = curl_init($urls[$i]);
         curl_setopt_array($ch, $opts);
@@ -111,6 +114,7 @@ function execCurls(array $urls, array $users, array $tokens) {
         }
         curl_multi_add_handle($mh, $ch);
     }
+    
     return getCurlResults($mh);
 }
 
