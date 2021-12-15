@@ -19,5 +19,5 @@
 * Customizable Links in the Navigationbar with icons from [Fontawsome](https://fontawesome.com/icons?d=gallery)
 
 ## Todos
-* Adding Install Script
-* Adding Easy link add / Remove to navigation bar
+* [ ] Adding Install Script
+* [ ] Adding Easy link add / Remove to navigation bar
