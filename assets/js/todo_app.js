@@ -173,7 +173,10 @@ app.controller("todoList", function ($scope, $http) {
                         var text = ((data[outerKey][innerKey]) +"") .split(/\s+/g);
                         for (var i = 0; i <= text.length; i++) {
                             if (text[i] !== undefined && text[i].startsWith("http")) {
-                                entry["links"].push({"link": text[i], "short": text[i].split("//")[1].replace("www.", "")});
+                                var splitted = text[i].split("//");
+                                if(splitted[1]){
+                                    entry["links"].push({"link": text[i], "short": splitted[1].replace("www.", "")});
+                                }
                             }
                             if (text[i] !== undefined && text[i].startsWith("#")) {
                                 entry["searchlabels"].push(text[i].replace("#", ""));
