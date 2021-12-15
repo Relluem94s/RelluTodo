@@ -109,10 +109,11 @@ div.container table.todoList span.stats {
     color:#fff !important;
     font-size: 20px;
     font-weight: bold;
+    padding-top:10px;
 }
 
 .navbar-inverse {
-    background-color: #f37d00;
+    background-color: #232323;
     border:0px;
 }
 
@@ -126,7 +127,7 @@ div.container table.todoList span.stats {
 }
 
 .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
-    background-color:#e26c00;
+    background-color:#111111;
     color:#fff !important;
 }
 
